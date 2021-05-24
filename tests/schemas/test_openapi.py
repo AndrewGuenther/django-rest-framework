@@ -311,7 +311,8 @@ class TestOperationIntrospection(TestCase):
         inspector.view = view
 
         responses = inspector.get_responses(path, method)
-        assert responses['201']['content']['application/json']['schema']['$ref'] == '#/components/schemas/Item'
+        assert responses['201']['content']['application/json']['schema']['$ref'] == \
+            '#/components/schemas/CreateItemResponse'
 
         components = inspector.get_components(path, method)
         assert sorted(components['Item']['required']) == ['text', 'write_only']
@@ -341,7 +342,7 @@ class TestOperationIntrospection(TestCase):
         inspector.view = view
 
         responses = inspector.get_responses(path, method)
-        assert responses['201']['content']['application/json']['schema']['$ref'] == '#/components/schemas/Item'
+        assert responses['201']['content']['application/json']['schema']['$ref'] == '#/components/schemas/CreateItemResponse'
         components = inspector.get_components(path, method)
         assert components['Item']
 
@@ -378,10 +379,7 @@ class TestOperationIntrospection(TestCase):
                 'content': {
                     'application/json': {
                         'schema': {
-                            'type': 'array',
-                            'items': {
-                                '$ref': '#/components/schemas/Item'
-                            },
+                            '$ref': '#/components/schemas/ListItemsResponse'
                         },
                     },
                 },
@@ -389,6 +387,12 @@ class TestOperationIntrospection(TestCase):
         }
         components = inspector.get_components(path, method)
         assert components == {
+            'ListItemsResponse': {
+                'type': 'array',
+                'items': {
+                    '$ref': '#/components/schemas/Item',
+                },
+            },
             'Item': {
                 'type': 'object',
                 'properties': {
@@ -434,13 +438,7 @@ class TestOperationIntrospection(TestCase):
                 'content': {
                     'application/json': {
                         'schema': {
-                            'type': 'object',
-                            'item': {
-                                'type': 'array',
-                                'items': {
-                                    '$ref': '#/components/schemas/Item'
-                                },
-                            },
+                            '$ref': '#/components/schemas/ListItemsResponse'
                         },
                     },
                 },
@@ -448,6 +446,15 @@ class TestOperationIntrospection(TestCase):
         }
         components = inspector.get_components(path, method)
         assert components == {
+            'ListItemsResponse': {
+                'type': 'object',
+                'item': {
+                    'type': 'array',
+                    'items': {
+                        '$ref': '#/components/schemas/Item',
+                    },
+                },
+            },
             'Item': {
                 'type': 'object',
                 'properties': {
@@ -611,7 +618,7 @@ class TestOperationIntrospection(TestCase):
                 'content': {
                     'application/json': {
                         'schema': {
-                            '$ref': '#/components/schemas/Item'
+                            '$ref': '#/components/schemas/RetrieveItemResponse'
                         },
                     },
                 },
@@ -620,6 +627,9 @@ class TestOperationIntrospection(TestCase):
 
         components = inspector.get_components(path, method)
         assert components == {
+            'RetrieveItemResponse': {
+                '$ref': '#/components/schemas/Item'
+            },
             'Item': {
                 'type': 'object',
                 'properties': {
