@@ -401,7 +401,7 @@ class AutoSchema(ViewInspector):
             model = getattr(field.queryset, 'model', None)
             if model is not None:
                 model_field = model._meta.pk
-                if isinstance(model_field, models.AutoField):
+                if issubclass(model_field.__class__, models.IntegerField):
                     return {'type': 'integer'}
 
         # ChoiceFields (single and multiple).
